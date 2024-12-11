@@ -3,24 +3,15 @@ const connectDB = require("./config/database");
 const app = express();
 const User = require("./models/user");
 
-//post API call for creating user
-app.post("/signup", async (req, res) => {
-  //creting a dummy user
-  const userObj = {
-    firstName: "Roronoa",
-    lastName: "Zoro",
-    emailId: "zoro@gmail.com",
-    password: "zoro@2002",
-    age: 25,
-    gender: "male",
-  };
-  //creting a new instance of user model
-  const user = new User(userObj);
+//it is json middleware which reads the data from request body and convert it into the json object
+app.use(express.json());
 
-  //hnadling the wrror usinf try & catch
+app.post("/signup", async (req, res) => {
+  const user = new User(req.body);
+
   try {
-    await user.save(); //saving the data into DB
-    res.send("User added to DB successfully....!"); //sending back the response
+    await user.save();
+    res.send("User added to DB successfully....!");
   } catch (err) {
     res.status(400).send("Error Adding the user....!" + err.message);
   }
