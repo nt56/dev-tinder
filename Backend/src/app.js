@@ -18,27 +18,11 @@ app.post("/signup", async (req, res) => {
 });
 
 //get user by emailId
-app.get("/user", async (req, res) => {
-  const userEmail = req.body.emailId;
-
-  try {
-    const user = await User.find({ emailId: userEmail });
-    if (!user) {
-      res.send("User not found");
-    } else {
-      res.send(user);
-    }
-  } catch (err) {
-    res.status(400).send("Something went Wrong....!" + err.message);
-  }
-});
-
-//get user by Id
 // app.get("/user", async (req, res) => {
-//   const userId = req.body._id;
+//   const userEmail = req.body.emailId;
 
 //   try {
-//     const user = await User.find({ _id: userId });
+//     const user = await User.find({ emailId: userEmail });
 //     if (!user) {
 //       res.send("User not found");
 //     } else {
@@ -48,6 +32,22 @@ app.get("/user", async (req, res) => {
 //     res.status(400).send("Something went Wrong....!" + err.message);
 //   }
 // });
+
+//get user by Id
+app.get("/user", async (req, res) => {
+  const userId = req.body._id;
+
+  try {
+    const user = await User.find({ _id: userId });
+    if (!user) {
+      res.send("User not found");
+    } else {
+      res.send(user);
+    }
+  } catch (err) {
+    res.status(400).send("Something went Wrong....!" + err.message);
+  }
+});
 
 //get all users from DB
 app.get("/feed", async (req, res) => {
@@ -74,6 +74,23 @@ app.delete("/user", async (req, res) => {
       res.send("User Not found....!");
     } else {
       res.send("User deleted successfully....!");
+    }
+  } catch (err) {
+    res.status(400).send("Something went Wrong....!" + err.message);
+  }
+});
+
+//update user by id
+app.patch("/user", async (req, res) => {
+  const userId = req.body.userId;
+  const data = req.body; //data for update
+
+  try {
+    const user = await User.findByIdAndUpdate({ _id: userId }, data);
+    if (!user) {
+      res.send("user not found..!");
+    } else {
+      res.send("user updated successfully...!");
     }
   } catch (err) {
     res.status(400).send("Something went Wrong....!" + err.message);
