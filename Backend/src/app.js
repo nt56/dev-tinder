@@ -70,7 +70,9 @@ app.patch("/user", async (req, res) => {
   const data = req.body; //data for update
 
   try {
-    const user = await User.findByIdAndUpdate({ _id: userId }, data);
+    const user = await User.findByIdAndUpdate({ _id: userId }, data, {
+      runValidators: true,
+    });
     if (!user) {
       res.send("user not found..!");
     } else {
