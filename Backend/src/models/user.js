@@ -70,6 +70,7 @@ const userSchema = new mongoose.Schema(
     skills: {
       type: [String],
       lowercase: true,
+      maxLength: 15,
     },
     about: {
       type: String,

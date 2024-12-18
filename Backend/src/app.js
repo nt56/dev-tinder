@@ -7,34 +7,10 @@ const User = require("./models/user");
 app.use(express.json());
 
 app.post("/signup", async (req, res) => {
-  const user = await new User(req.body);
+  const data = req.body;
+  const user = await new User(data);
 
   try {
-    //API validation
-    const allowedUpdates = [
-      "photoUrl",
-      "about",
-      "skills",
-      "gender",
-      "age",
-      "email",
-      "firstName",
-      "lastName",
-      "password",
-    ];
-    const isInsertAllowed = Object.keys(data).every((k) => {
-      allowedUpdates.includes(k);
-    });
-    if (!isInsertAllowed) {
-      throw new Error("Unnecessory Data is not allowed...!");
-    }
-    if (data?.skills.length > 15) {
-      throw new Error("Skills more than 15 is not allowed...!");
-    }
-    if (data?.age < 15) {
-      throw new Error("Your age ahould more than 15...!");
-    }
-
     await user.save();
     res.send("User added to DB successfully....!");
   } catch (err) {
@@ -96,10 +72,10 @@ app.patch("/user/:userId", async (req, res) => {
 
   try {
     //API validation
-    const allowedUpdates = ["photoUrl", "about", "skills", "gender", "age"];
-    const isUpdateAllowed = Object.keys(data).every((k) => {
-      allowedUpdates.includes(k);
-    });
+    const allowedUpdates = ["photoUrl", "about", "gender", "age", "skills"];
+    const isUpdateAllowed = Object.keys(data).every((k) =>
+      allowedUpdates.includes(k)
+    );
     if (!isUpdateAllowed) {
       throw new Error("Unnecessory Update is not allowed...!");
     }
@@ -107,7 +83,7 @@ app.patch("/user/:userId", async (req, res) => {
       throw new Error("Skills more than 15 is not allowed...!");
     }
     if (data?.age < 15) {
-      throw new Error("Your age ahould more than 15...!");
+      throw new Error("Your age ahould be more than 15...!");
     }
 
     const user = await User.findByIdAndUpdate({ _id: userId }, data, {
