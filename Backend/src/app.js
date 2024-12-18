@@ -11,6 +11,25 @@ app.post("/signup", async (req, res) => {
   const user = await new User(data);
 
   try {
+    //API validation - if user enter wrong data expect schema then it will throw an error it only includes allowedData
+    const allowedData = [
+      "firstName",
+      "lastName",
+      "emailId",
+      "password",
+      "gender",
+      "age",
+      "about",
+      "photoUrl",
+      "skills",
+    ];
+    const isDataAllowed = Object.keys(data).every((k) =>
+      allowedData.includes(k)
+    );
+    if (!isDataAllowed) {
+      throw new Error("Unnecessory Data is not allowed...!");
+    }
+
     await user.save();
     res.send("User added to DB successfully....!");
   } catch (err) {
@@ -78,12 +97,6 @@ app.patch("/user/:userId", async (req, res) => {
     );
     if (!isUpdateAllowed) {
       throw new Error("Unnecessory Update is not allowed...!");
-    }
-    if (data?.skills.length > 15) {
-      throw new Error("Skills more than 15 is not allowed...!");
-    }
-    if (data?.age < 15) {
-      throw new Error("Your age ahould be more than 15...!");
     }
 
     const user = await User.findByIdAndUpdate({ _id: userId }, data, {

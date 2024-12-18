@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const validator = require("validator");
 
 const userSchema = new mongoose.Schema(
   {
@@ -21,28 +22,28 @@ const userSchema = new mongoose.Schema(
       unique: true,
       trim: true,
       required: true,
-      maxLength: 50,
-      // validate(value) {
-      //   if (!validator.isEmail(value)) {
-      //     throw new Error("Invalid email address: " + value);
-      //   }
-      // },
+      maxLength: 30,
+      validate(value) {
+        if (!validator.isEmail(value)) {
+          throw new Error("Invalid email address: " + value);
+        }
+      },
     },
     password: {
       type: String,
       required: true,
-      minLength: 4,
       maxLength: 20,
       trim: true,
-      // validate(value) {
-      //   if (!validator.isStrongPassword(value)) {
-      //     throw new Error("Enter a Strong Password: " + value);
-      //   }
-      // },
+      validate(value) {
+        if (!validator.isStrongPassword(value)) {
+          throw new Error("Enter a Strong Password: " + value);
+        }
+      },
     },
     age: {
       type: Number,
       required: true,
+      min: 15,
     },
     gender: {
       type: String,
@@ -52,20 +53,15 @@ const userSchema = new mongoose.Schema(
         values: ["male", "female", "other"],
         message: `{VALUE} is not a valid gender type`,
       },
-      // validate() {
-      //   if (!["male", "female", "other"]) {
-      //     throw new Error("Enter correct gender");
-      //   }
-      // },
     },
     photoUrl: {
       type: String,
       default: "https://geographyandyou.com/images/user-profile.png",
-      // validate(value) {
-      //   if (!validator.isURL(value)) {
-      //     throw new Error("Invalid Photo URL: " + value);
-      //   }
-      // },
+      validate(value) {
+        if (!validator.isURL(value)) {
+          throw new Error("Invalid Photo URL: " + value);
+        }
+      },
     },
     skills: {
       type: [String],
