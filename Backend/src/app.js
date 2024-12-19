@@ -1,39 +1,50 @@
 const express = require("express");
+const bcrypt = require("bcrypt");
 const connectDB = require("./config/database");
 const app = express();
 const User = require("./models/user");
+const { checkUserData, validateUserData } = require("./utils/valiadation");
 
 //it is json middleware which reads the data from request body and convert it into the json object
 app.use(express.json());
 
 app.post("/signup", async (req, res) => {
-  const data = req.body;
-  const user = await new User(data);
-
   try {
-    //API validation - if user enter wrong data expect schema then it will throw an error it only includes allowedData
-    const allowedData = [
-      "firstName",
-      "lastName",
-      "emailId",
-      "password",
-      "gender",
-      "age",
-      "about",
-      "photoUrl",
-      "skills",
-    ];
-    const isDataAllowed = Object.keys(data).every((k) =>
-      allowedData.includes(k)
-    );
-    if (!isDataAllowed) {
-      throw new Error("Unnecessory Data is not allowed...!");
-    }
+    //Validating the data
+    checkUserData(req);
+    validateUserData(req);
 
+    //Encrypting the password
+    const {
+      firstName,
+      lastName,
+      emailId,
+      password,
+      age,
+      skills,
+      about,
+      photoUrl,
+      gender,
+    } = req.body;
+    const hashPassword = await bcrypt.hash(password, 10);
+
+    //saving user in the DB
+    const user = new User({
+      firstName,
+      lastName,
+      emailId,
+      password: hashPassword,
+      age,
+      skills,
+      gender,
+      photoUrl,
+      about,
+    });
     await user.save();
+
     res.send("User added to DB successfully....!");
   } catch (err) {
-    res.status(400).send("Error Adding the user....!" + err.message);
+    res.status(400).send("Error : " + err.message);
   }
 });
 

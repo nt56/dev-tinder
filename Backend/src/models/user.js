@@ -12,6 +12,7 @@ const userSchema = new mongoose.Schema(
     },
     lastName: {
       type: String,
+      required: true,
       minLength: 2,
       maxLength: 30,
       trim: true,
@@ -32,7 +33,7 @@ const userSchema = new mongoose.Schema(
     password: {
       type: String,
       required: true,
-      maxLength: 20,
+      maxLength: 100,
       trim: true,
       validate(value) {
         if (!validator.isStrongPassword(value)) {
@@ -42,12 +43,10 @@ const userSchema = new mongoose.Schema(
     },
     age: {
       type: Number,
-      required: true,
       min: 15,
     },
     gender: {
       type: String,
-      required: true,
       trim: true,
       enum: {
         values: ["male", "female", "other"],
