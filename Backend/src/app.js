@@ -48,6 +48,29 @@ app.post("/signup", async (req, res) => {
   }
 });
 
+app.post("/login", async (req, res) => {
+  try {
+    //extracting email and password fro the body
+    const { emailId, password } = req.body;
+
+    //finding user by emailId and valiadting the emailId
+    const user = await User.findOne({ emailId: emailId });
+    if (!user) {
+      throw new Error("Invalid Crediantials");
+    }
+
+    //comparing the password and sending the response
+    const isPasswordMatch = await bcrypt.compare(password, user.password);
+    if (isPasswordMatch) {
+      res.send("Login Successfull....!");
+    } else {
+      throw new Error("Invalid Crediantials");
+    }
+  } catch (err) {
+    res.status(400).send("Error : " + err.message);
+  }
+});
+
 //get user by Id
 app.get("/user", async (req, res) => {
   const userId = req.body._id;
