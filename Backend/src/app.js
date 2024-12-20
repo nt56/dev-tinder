@@ -1,12 +1,14 @@
 const express = require("express");
 const bcrypt = require("bcrypt");
+const cookieParser = require("cookie-parser");
 const connectDB = require("./config/database");
 const app = express();
 const User = require("./models/user");
 const { checkUserData, validateUserData } = require("./utils/valiadation");
+const jwt = require("jsonwebtoken");
 
-//it is json middleware which reads the data from request body and convert it into the json object
-app.use(express.json());
+app.use(express.json()); //it is json middleware which reads the data from request body and convert it into the json object
+app.use(cookieParser()); //The cookie-parser module parses the Cookie header in a request and puts the cookie information in the req.cookies property
 
 app.post("/signup", async (req, res) => {
   try {
@@ -62,6 +64,12 @@ app.post("/login", async (req, res) => {
     //comparing the password and sending the response
     const isPasswordMatch = await bcrypt.compare(password, user.password);
     if (isPasswordMatch) {
+      //create jwt token
+      const token = await jwt.sign({ _id: user._id }, "DevTinder@123"); //first arg is what you want to hide and second srg is secret key
+
+      //token to the cookie send response back to the user
+      res.cookie("token", token);
+
       res.send("Login Successfull....!");
     } else {
       throw new Error("Invalid Crediantials");
@@ -71,7 +79,37 @@ app.post("/login", async (req, res) => {
   }
 });
 
-//get user by Id
+app.get("/profile", async (req, res) => {
+  try {
+    //getting the cookie
+    const cookies = req.cookies;
+
+    //extract the token from the cookies
+    const { token } = cookies;
+    if (!token) {
+      throw new Error("Token not found...!");
+    }
+
+    //verify the token
+    const isValidToken = await jwt.verify(token, "DevTinder@123");
+    if (!isValidToken) {
+      throw new Error("Invalid Token...!");
+    }
+
+    //find the user from token userId
+    const { _id } = isValidToken;
+    const user = await User.findById(_id);
+    if (!user) {
+      throw new Error("User not found...!");
+    }
+
+    //send the user
+    res.send(user);
+  } catch (err) {
+    res.status(400).send("Error : " + err.message);
+  }
+});
+
 app.get("/user", async (req, res) => {
   const userId = req.body._id;
 
@@ -87,7 +125,6 @@ app.get("/user", async (req, res) => {
   }
 });
 
-//get all users from DB
 app.get("/feed", async (req, res) => {
   try {
     const users = await User.find({});
@@ -101,7 +138,6 @@ app.get("/feed", async (req, res) => {
   }
 });
 
-//delete user by id
 app.delete("/user", async (req, res) => {
   const userId = req.body.userId;
 
@@ -118,7 +154,6 @@ app.delete("/user", async (req, res) => {
   }
 });
 
-//update user by id
 app.patch("/user/:userId", async (req, res) => {
   const userId = req.params?.userId;
   const data = req.body; //data for update
