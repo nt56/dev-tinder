@@ -1,26 +1,33 @@
-//dummy middleware where it checks admin auth if matches then execute else block otherwise send the error response
+const jwt = require("jsonwebtoken");
+const User = require("../models/user");
 
-const adminAuth = (req, res, next) => {
-  console.log("checking the admin auth middleware...");
-  //dummy logic of matching the token
-  const token = "nagabhushan";
-  const isAdminAuth = token === "nagabhushan";
-  if (!isAdminAuth) {
-    res.status(401).send("Unauthorized Admin Request...!");
-  } else {
-    next();
+const userAuth = async (req, res, next) => {
+  try {
+    //read token from the request cookies
+    const { token } = req.cookies;
+    if (!token) {
+      throw new Error("Token not found...!");
+    }
+
+    //validate the token
+    const isValidToken = await jwt.verify(token, "DevTinder@123");
+    if (!isValidToken) {
+      throw new Error("Invalid Token...!");
+    }
+
+    //find the user
+    const { _id } = isValidToken;
+    const user = await User.findById(_id);
+    if (!user) {
+      throw new Error("User not found...!");
+    }
+
+    //store user to req and next()
+    req.user = user;
+    next(); //if no error then goes to the next
+  } catch (err) {
+    res.status(404).send("Error : " + err.message);
   }
 };
 
-const userAuth = (req, res, next) => {
-  console.log("checking the user auth middleware...");
-  const token = "nagabhushan";
-  const isUserAuth = token === "nagabhushan";
-  if (!isUserAuth) {
-    res.status(401).send("Unauthorized User Request...!");
-  } else {
-    next();
-  }
-};
-
-module.exports = { adminAuth, userAuth };
+module.exports = { userAuth };
