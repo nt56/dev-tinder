@@ -5,7 +5,6 @@ const connectDB = require("./config/database");
 const app = express();
 const User = require("./models/user");
 const { checkUserData, validateUserData } = require("./utils/valiadation");
-const jwt = require("jsonwebtoken");
 const { userAuth } = require("./middlewares/auth");
 
 app.use(express.json()); //it is json middleware which reads the data from request body and convert it into the json object
@@ -62,13 +61,11 @@ app.post("/login", async (req, res) => {
       throw new Error("Invalid Crediantials");
     }
 
-    //comparing the password and sending the response
-    const isPasswordMatch = await bcrypt.compare(password, user.password);
+    //comparing the password and sending the response using schema methods
+    const isPasswordMatch = await user.validatePassword(password);
     if (isPasswordMatch) {
-      //create jwt token
-      const token = await jwt.sign({ _id: user._id }, "DevTinder@123", {
-        expiresIn: "1h",
-      }); //first arg is what you want to hide and second srg is secret key third is expiry time
+      //create jwt token using schema methods
+      const token = await user.getJWT();
 
       //token to the cookie send response back to the user
       res.cookie("token", token, {
@@ -96,77 +93,6 @@ app.get("/profile", userAuth, async (req, res) => {
 app.post("/sendConnectionRequest", userAuth, async (req, res) => {
   const user = req.user;
   res.send(user.firstName + " sent the connection request...!");
-});
-
-app.get("/user", async (req, res) => {
-  const userId = req.body._id;
-
-  try {
-    const user = await User.find({ _id: userId });
-    if (!user) {
-      res.send("User not found");
-    } else {
-      res.send(user);
-    }
-  } catch (err) {
-    res.status(400).send("Something went Wrong....!" + err.message);
-  }
-});
-
-app.get("/feed", async (req, res) => {
-  try {
-    const users = await User.find({});
-    if ((await users).length === 0) {
-      res.send("No users found in the DB...!");
-    } else {
-      res.send(users);
-    }
-  } catch (err) {
-    res.status(400).send("Something went Wrong....!" + err.message);
-  }
-});
-
-app.delete("/user", async (req, res) => {
-  const userId = req.body.userId;
-
-  try {
-    // const user = await User.findByIdAndDelete({ _id: userId });
-    const user = await User.findByIdAndDelete(userId);
-    if (!user) {
-      res.send("User Not found....!");
-    } else {
-      res.send("User deleted successfully....!");
-    }
-  } catch (err) {
-    res.status(400).send("Something went Wrong....!" + err.message);
-  }
-});
-
-app.patch("/user/:userId", async (req, res) => {
-  const userId = req.params?.userId;
-  const data = req.body; //data for update
-
-  try {
-    //API validation
-    const allowedUpdates = ["photoUrl", "about", "gender", "age", "skills"];
-    const isUpdateAllowed = Object.keys(data).every((k) =>
-      allowedUpdates.includes(k)
-    );
-    if (!isUpdateAllowed) {
-      throw new Error("Unnecessory Update is not allowed...!");
-    }
-
-    const user = await User.findByIdAndUpdate({ _id: userId }, data, {
-      runValidators: true,
-    });
-    if (!user) {
-      res.send("user not found..!");
-    } else {
-      res.send("user updated successfully...!");
-    }
-  } catch (err) {
-    res.status(400).send("Something went Wrong....!" + err.message);
-  }
 });
 
 connectDB()
