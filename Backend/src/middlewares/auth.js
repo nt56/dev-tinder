@@ -6,14 +6,11 @@ const userAuth = async (req, res, next) => {
     //read token from the request cookies
     const { token } = req.cookies;
     if (!token) {
-      throw new Error("Token not found...!");
+      return res.status(401).send("Please Login!");
     }
 
     //validate the token
     const isValidToken = await jwt.verify(token, "DevTinder@123");
-    if (!isValidToken) {
-      throw new Error("Invalid Token...!");
-    }
 
     //find the user
     const { _id } = isValidToken;
