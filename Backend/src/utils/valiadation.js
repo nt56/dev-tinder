@@ -33,4 +33,22 @@ const validateUserData = (req) => {
   }
 };
 
-module.exports = { checkUserData, validateUserData };
+const validateEditData = (req) => {
+  const isEditDataAllowed = [
+    "firstName",
+    "lastName",
+    "gender",
+    "age",
+    "about",
+    "photoUrl",
+    "skills",
+  ];
+
+  const isValidEditData = Object.keys(req.body).every((feild) =>
+    isEditDataAllowed.includes(feild)
+  );
+
+  return isValidEditData;
+};
+
+module.exports = { checkUserData, validateUserData, validateEditData };

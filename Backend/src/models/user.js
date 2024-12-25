@@ -71,7 +71,7 @@ const userSchema = new mongoose.Schema(
     },
     about: {
       type: String,
-      maxLength: 100,
+      maxLength: 500,
       default: "This is a default about of the user!",
     },
   },
