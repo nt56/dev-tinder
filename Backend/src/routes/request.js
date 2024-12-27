@@ -55,4 +55,41 @@ requestRouter.post(
   }
 );
 
+requestRouter.post(
+  "/request/review/:status/:requestId",
+  userAuth,
+  async (req, res) => {
+    try {
+      //fetching the required data
+      const loggedInUser = req.user;
+      const { status, requestId } = req.params;
+
+      //validate the status
+      const isValidStatus = ["accepted", "rejected"];
+      if (!isValidStatus.includes(status)) {
+        throw new Error("Invalid Status..!");
+      }
+
+      //validating data in DB where requestId=valid, loggedInUser=currentUserId, status="interested" - only loggedIn user and intrested status can review
+      const connectionRequest = await connectionRequestModel.findOne({
+        _id: requestId,
+        toUserId: loggedInUser._id,
+        status: "interested",
+      });
+      if (!connectionRequest) {
+        throw new Error("Connection Request Not found..!");
+      }
+
+      //loggedIn user modify the status and save
+      connectionRequest.status = status;
+      await connectionRequest.save();
+
+      //send back the response
+      res.send("Connection request reviewed...!");
+    } catch (err) {
+      res.status(400).send("Error : " + err.message);
+    }
+  }
+);
+
 module.exports = requestRouter;
