@@ -47,7 +47,7 @@ userRouter.get("/user/connections", userAuth, async (req, res) => {
 
     //map- if request accepted fromUser or request accepted toUser both case handles returns what exists
     const data = connectionRequest.map((row) => {
-      if (row.fromUserId._id.toString() === row.toUserId._id.toString()) {
+      if (row.fromUserId._id.toString() === loggedInUser._id.toString()) {
         return row.toUserId;
       }
       return row.fromUserId;
