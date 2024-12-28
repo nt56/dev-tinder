@@ -26,7 +26,7 @@ requestRouter.post(
         throw new Error("user not found");
       }
 
-      //check if there is existing connected user in DB or another user sending connection request to existing user
+      //check if there is existing connected user in DB or same another user sending connection request to existing user
       const isExistingConnectionnectedUser =
         await connectionRequestModel.findOne({
           $or: [
