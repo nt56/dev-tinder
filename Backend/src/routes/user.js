@@ -28,7 +28,7 @@ userRouter.get("/user/requests/received", userAuth, async (req, res) => {
   }
 });
 
-userRouter.get("/user/requests/received", userAuth, async (req, res) => {
+userRouter.get("/user/connections", userAuth, async (req, res) => {
   try {
     const loggedInUser = req.user;
 
@@ -42,10 +42,16 @@ userRouter.get("/user/requests/received", userAuth, async (req, res) => {
           { fromUserId: loggedInUser._id, status: "accepted" },
         ],
       })
-      .populate("fromUserId", USER_DATA);
+      .populate("fromUserId", USER_DATA)
+      .populate("toUserId", USER_DATA);
 
-    //map only fromUser data
-    const data = connectionRequest.map((row) => row.fromUserId);
+    //map- if request accepted fromUser or request accepted toUser both case handles returns what exists
+    const data = connectionRequest.map((row) => {
+      if (row.fromUserId._id.toString() === row.toUserId._id.toString()) {
+        return row.toUserId;
+      }
+      return row.fromUserId;
+    });
 
     //response back to the user
     res.status(200).send(data);
