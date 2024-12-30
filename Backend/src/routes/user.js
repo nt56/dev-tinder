@@ -2,7 +2,6 @@ const express = require("express");
 const userRouter = express.Router();
 const { userAuth } = require("../middlewares/auth");
 const { connectionRequestModel } = require("../models/connectionRequest");
-const { set } = require("mongoose");
 const User = require("../models/user");
 
 const USER_DATA = "firstName lastName age gender skills about";
@@ -64,11 +63,6 @@ userRouter.get("/user/connections", userAuth, async (req, res) => {
 });
 
 //feed
-//algorithm-user should see all the user cards expect
-//1. his own card
-//2. his connections
-//3. ignored people
-//4. already sent a connection request
 userRouter.get("/user/feed", userAuth, async (req, res) => {
   try {
     const loggedInUser = req.user;
