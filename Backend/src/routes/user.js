@@ -2,6 +2,8 @@ const express = require("express");
 const userRouter = express.Router();
 const { userAuth } = require("../middlewares/auth");
 const { connectionRequestModel } = require("../models/connectionRequest");
+const { set } = require("mongoose");
+const User = require("../models/user");
 
 const USER_DATA = "firstName lastName age gender skills about";
 
@@ -28,6 +30,7 @@ userRouter.get("/user/requests/received", userAuth, async (req, res) => {
   }
 });
 
+//get all connections
 userRouter.get("/user/connections", userAuth, async (req, res) => {
   try {
     const loggedInUser = req.user;
@@ -60,4 +63,42 @@ userRouter.get("/user/connections", userAuth, async (req, res) => {
   }
 });
 
+//feed
+//algorithm-user should see all the user cards expect
+//1. his own card
+//2. his connections
+//3. ignored people
+//4. already sent a connection request
+userRouter.get("/user/feed", userAuth, async (req, res) => {
+  try {
+    const loggedInUser = req.user;
+
+    //find all the connection requests(sent+received)(2,3,4)
+    const connectionRequest = await connectionRequestModel
+      .find({
+        $or: [{ fromUserId: loggedInUser._id }, { toUserId: loggedInUser._id }],
+      })
+      .select("fromUserId toUserId");
+
+    //find the user to hide using set data structure
+    const hideUsersFromFeed = new Set();
+    connectionRequest.map((req) => {
+      hideUsersFromFeed.add(req.fromUserId.toString());
+      hideUsersFromFeed.add(req.toUserId.toString());
+    });
+
+    //find all the users whos id is not present in hideUser and not his own id(1)
+    const users = await User.find({
+      $and: [
+        { _id: { $nin: Array.from(hideUsersFromFeed) } },
+        { _id: { $ne: loggedInUser._id } },
+      ],
+    }).select(USER_DATA);
+
+    //send back the response
+    res.status(200).send(users);
+  } catch (err) {
+    res.status(400).send("Error : " + err.message);
+  }
+});
 module.exports = userRouter;
