@@ -7,10 +7,12 @@ import Connections from "./components/Connections";
 import Requests from "./components/Requests";
 import { Provider } from "react-redux";
 import appStore from "./utils/appStore";
+import { ToastContainer } from "react-toastify";
 
 function App() {
   return (
     <>
+      <ToastContainer />
       <Provider store={appStore}>
         <BrowserRouter basename="/">
           <Routes>

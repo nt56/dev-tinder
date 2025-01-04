@@ -4,18 +4,16 @@ import { useDispatch } from "react-redux";
 import { addUser } from "../utils/userSlice";
 import { useNavigate } from "react-router-dom";
 import { BASE_URL } from "../utils/constants";
+import { toast } from "react-toastify";
 
 const Login = () => {
   const [emailId, setEmailId] = useState("luffy@gmail.com");
   const [password, setPassword] = useState("Luffy@2002");
-  const [error, setError] = useState("");
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  //login handle
   const handleLogin = async () => {
     try {
-      //api call using axios library
       const res = await axios.post(
         BASE_URL + "/login",
         {
@@ -24,10 +22,11 @@ const Login = () => {
         },
         { withCredentials: true }
       );
-      dispatch(addUser(res.data)); //adding user to store
+      dispatch(addUser(res.data));
       navigate("/");
+      toast.success("Login Successful..!");
     } catch (err) {
-      setError(err?.response?.data);
+      toast.error(err?.response?.data);
     }
   };
 
@@ -60,7 +59,6 @@ const Login = () => {
               />
             </label>
           </div>
-          <p className="text-red-600">{error}</p>
           <div className="card-actions justify-center mt-5">
             <button className="btn btn-primary" onClick={handleLogin}>
               Login
