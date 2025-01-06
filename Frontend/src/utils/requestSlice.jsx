@@ -7,9 +7,13 @@ const requestSlice = createSlice({
     addRequests: (state, action) => {
       return action.payload;
     },
+    removeRequest: (state, action) => {
+      const newArray = state.filter((r) => r._id !== action.payload);
+      return newArray; //returning latest info and removing card
+    },
   },
 });
 
-export const { addRequests } = requestSlice.actions;
+export const { addRequests, removeRequest } = requestSlice.actions;
 
 export default requestSlice.reducer;

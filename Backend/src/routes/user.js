@@ -19,11 +19,8 @@ userRouter.get("/user/requests/received", userAuth, async (req, res) => {
       })
       .populate("fromUserId", USER_DATA);
 
-    //map only fromUser data
-    const data = connectionRequest.map((row) => row.fromUserId);
-
     //send back the response
-    res.status(200).send(data);
+    res.status(200).send(connectionRequest);
   } catch (err) {
     res.status(400).send("Error : " + err.message);
   }
@@ -68,8 +65,8 @@ userRouter.get("/user/feed", userAuth, async (req, res) => {
     const loggedInUser = req.user;
 
     //pagination
-    const page = req.query.page || 1;
-    let limit = req.query.limit || 10;
+    const page = parseInt(req.query.page) || 1;
+    let limit = parseInt(req.query.limit) || 10;
     limit > 50 ? 50 : limit;
     const skip = (page - 1) * limit;
 
@@ -82,7 +79,7 @@ userRouter.get("/user/feed", userAuth, async (req, res) => {
 
     //find the user to hide using set data structure
     const hideUsersFromFeed = new Set();
-    connectionRequest.map((req) => {
+    connectionRequest.forEach((req) => {
       hideUsersFromFeed.add(req.fromUserId.toString());
       hideUsersFromFeed.add(req.toUserId.toString());
     });

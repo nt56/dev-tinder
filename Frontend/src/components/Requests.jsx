@@ -2,7 +2,7 @@ import axios from "axios";
 import { BASE_URL } from "../utils/constants";
 import { toast } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
-import { addRequests } from "../utils/requestSlice";
+import { addRequests, removeRequest } from "../utils/requestSlice";
 import { useEffect } from "react";
 
 const Requests = () => {
@@ -21,16 +21,27 @@ const Requests = () => {
     }
   };
 
+  const reviewRequest = async (status, _id) => {
+    try {
+      const res = axios.post(
+        BASE_URL + "/request/review/" + status + "/" + _id,
+        {},
+        { withCredentials: true }
+      );
+      dispatch(removeRequest(_id));
+      toast.success("Request " + status);
+    } catch (err) {
+      toast.error(err.response.data);
+    }
+  };
+
   useEffect(() => {
     fetchRequests();
   }, []);
 
   if (!requests) return;
-  if (requests.length === 0) {
-    return (
-      <h1 className="text-bold text-white text-3xl">Requests Not Found...!</h1>
-    );
-  }
+  if (requests.length === 0)
+    return <h1 className="flex justify-center my-10"> No Requests Found</h1>;
 
   return (
     requests && (
@@ -38,7 +49,7 @@ const Requests = () => {
         <h1 className="text-bold text-white text-3xl">Connections Requests</h1>
         {requests.map((request) => {
           const { _id, firstName, lastName, age, gender, photoUrl, about } =
-            request;
+            request.fromUserId;
 
           return (
             <div
@@ -60,8 +71,18 @@ const Requests = () => {
                 <p>{about}</p>
               </div>
               <div>
-                <button className="btn btn-primary mx-2">Reject</button>
-                <button className="btn btn-secondary mx-2">Accept</button>
+                <button
+                  className="btn btn-primary mx-2"
+                  onClick={() => reviewRequest("rejected", request._id)}
+                >
+                  Reject
+                </button>
+                <button
+                  className="btn btn-secondary mx-2"
+                  onClick={() => reviewRequest("accepted", request._id)}
+                >
+                  Accept
+                </button>
               </div>
             </div>
           );
