@@ -10,7 +10,6 @@ const Requests = () => {
   const dispatch = useDispatch();
 
   const fetchRequests = async () => {
-    if (requests) return;
     try {
       const res = await axios.get(BASE_URL + "/user/requests/received", {
         withCredentials: true,

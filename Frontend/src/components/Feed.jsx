@@ -13,12 +13,12 @@ const Feed = () => {
   const navigate = useNavigate();
 
   const getFeed = async () => {
+    if (feed) return;
     try {
-      if (feed) return;
       const res = await axios.get(BASE_URL + "/user/feed", {
         withCredentials: true,
       });
-      dispatch(addFeed(res?.data));
+      dispatch(addFeed(res.data));
     } catch (err) {
       navigate("/login");
       console.log(err.message);
@@ -31,10 +31,11 @@ const Feed = () => {
 
   if (!feed) return;
 
-  if (feed.length <= 0)
+  if (feed.length <= 0) {
     return (
       <h1 className="flex justify-center my-10">No new users found...!</h1>
     );
+  }
 
   return (
     feed && (

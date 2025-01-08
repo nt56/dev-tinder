@@ -10,20 +10,21 @@ import { toast } from "react-toastify";
 
 const Body = () => {
   const userData = useSelector((store) => store.user);
-
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const fetchUser = async () => {
+    if (userData) return;
     try {
-      if (userData) return;
       const res = await axios.get(BASE_URL + "/profile/view", {
         withCredentials: true,
       });
       dispatch(addUser(res.data));
       navigate("/");
     } catch (err) {
-      navigate("/login");
+      if (err.status === 401) {
+        navigate("/login");
+      }
       toast.error(err.response.data);
     }
   };
