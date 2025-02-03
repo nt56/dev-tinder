@@ -4,7 +4,7 @@ import axios from "axios";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { addUser } from "../utils/userSlice";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { BASE_URL } from "../utils/constants";
 import { toast } from "react-toastify";
 
@@ -116,6 +116,11 @@ const Login = () => {
               </div>
             </label>
           </div>
+          {/* {isLoginform && (
+            <Link to="/forgotPassword" className="cursor-pointer">
+              <p className="font-bold text-white">Forgot Password</p>
+            </Link>
+          )} */}
           <div className="card-actions justify-center mt-5">
             <button
               className="btn btn-primary"
