@@ -67,3 +67,23 @@
     - restart nginx - sudo systemctl restart nginx
     - Modify the BASEURL in frontend project to "/api"
     
+## Nginx Config
+
+    Frontend = http://13.61.5.4/
+    Backend = http://13.61.5.4/:3000/
+
+    Domain name = devtinder.com => 13.61.5.4
+
+    Frontend = devtinder.com
+    Backend = devtinder.com:7777 => devtinder.com/api
+
+    server_name 13.61.5.4;
+
+    location /api/ {
+        proxy_pass http://localhost:3000/;  # Pass the request to the Node.js app
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        proxy_set_header Host $host;
+        proxy_cache_bypass $http_upgrade;
+    }
