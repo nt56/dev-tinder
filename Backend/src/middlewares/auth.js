@@ -10,7 +10,7 @@ const userAuth = async (req, res, next) => {
     }
 
     //validate the token
-    const isValidToken = await jwt.verify(token, "DevTinder@123");
+    const isValidToken = await jwt.verify(token, process.env.JWT_SECRET);
 
     //find the user
     const { _id } = isValidToken;

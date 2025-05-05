@@ -84,9 +84,9 @@ const userSchema = new mongoose.Schema(
 userSchema.methods.getJWT = async function () {
   const user = this;
 
-  const token = await jwt.sign({ _id: user._id }, "DevTinder@123", {
+  const token = await jwt.sign({ _id: user._id }, process.env.JWT_SECRET, {
     expiresIn: "1h",
-  }); //first arg is what you want to hide and second srg is secret key third is expiry time
+  }); //first arg is what you want to hide and second arg is secret key third is expiry time
 
   return token;
 };
