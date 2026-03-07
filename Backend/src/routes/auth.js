@@ -1,6 +1,7 @@
 const express = require("express");
 const authRouter = express.Router();
 const bcrypt = require("bcrypt");
+const validator = require("validator");
 const User = require("../models/user");
 const { checkUserData, validateUserData } = require("../utils/valiadation");
 
@@ -85,6 +86,42 @@ authRouter.post("/login", async (req, res) => {
 authRouter.post("/logout", async (req, res) => {
   res.cookie("token", null, { expires: new Date(Date.now()) });
   res.send("Logout Successful....!!");
+});
+
+authRouter.post("/forgot-password", async (req, res) => {
+  try {
+    const { emailId, newPassword } = req.body;
+
+    if (!emailId || !newPassword) {
+      throw new Error("Email and new password are required");
+    }
+
+    const user = await User.findOne({ emailId });
+    if (!user) {
+      throw new Error("No account found with this email");
+    }
+
+    if (!validator.isStrongPassword(newPassword)) {
+      throw new Error(
+        "Password must contain at least 8 characters, 1 uppercase, 1 lowercase, 1 number and 1 symbol",
+      );
+    }
+
+    const isSamePassword = await bcrypt.compare(newPassword, user.password);
+    if (isSamePassword) {
+      throw new Error("New password must be different from the old password");
+    }
+
+    const hashPassword = await bcrypt.hash(newPassword, 10);
+    user.password = hashPassword;
+    await user.save();
+
+    res.send(
+      "Password reset successfully! Please login with your new password.",
+    );
+  } catch (err) {
+    res.status(400).send("Error : " + err.message);
+  }
 });
 
 module.exports = authRouter;

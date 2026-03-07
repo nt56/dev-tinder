@@ -26,7 +26,7 @@ const Login = () => {
           emailId,
           password,
         },
-        { withCredentials: true }
+        { withCredentials: true },
       );
       dispatch(addUser(res.data));
       navigate("/");
@@ -41,7 +41,7 @@ const Login = () => {
       const res = await axios.post(
         BASE_URL + "/signup",
         { firstName, lastName, emailId, password },
-        { withCredentials: true }
+        { withCredentials: true },
       );
       dispatch(addUser(res.data));
       toast.success("Signup Successful..!");
@@ -52,88 +52,119 @@ const Login = () => {
   };
 
   return (
-    <div className="flex justify-center my-10">
-      <div className="card bg-base-300 w-96 shadow-xl">
-        <div className="card-body">
-          <h2 className="card-title justify-center">
-            {isLoginform ? "Login" : "SignUp"}
-          </h2>
-          <div>
+    <div className="flex items-center justify-center min-h-[calc(100vh-10rem)] px-4">
+      <div className="card bg-base-200 w-full max-w-md shadow-2xl border border-base-300">
+        <div className="card-body gap-4">
+          <div className="text-center">
+            <h2 className="text-2xl sm:text-3xl font-bold text-primary">
+              {isLoginform ? "Welcome Back" : "Create Account"}
+            </h2>
+            <p className="text-sm opacity-70 mt-1">
+              {isLoginform
+                ? "Sign in to find your dev match"
+                : "Join the developer community"}
+            </p>
+          </div>
+
+          <div className="space-y-3">
             {!isLoginform && (
-              <div>
-                <label className="form-control w-full max-w-xs">
+              <>
+                <label className="form-control w-full">
                   <div className="label">
-                    <span className="label-text">First Name</span>
+                    <span className="label-text font-medium">First Name</span>
                   </div>
                   <input
-                    type="email"
-                    className="input input-bordered w-full max-w-xs"
+                    type="text"
+                    placeholder="John"
+                    className="input input-bordered w-full focus:input-primary"
                     value={firstName}
                     onChange={(e) => setFirstName(e.target.value)}
                   />
                 </label>
-                <label className="form-control w-full max-w-xs">
+                <label className="form-control w-full">
                   <div className="label">
-                    <span className="label-text">Last Name</span>
+                    <span className="label-text font-medium">Last Name</span>
                   </div>
                   <input
-                    type="email"
-                    className="input input-bordered w-full max-w-xs"
+                    type="text"
+                    placeholder="Doe"
+                    className="input input-bordered w-full focus:input-primary"
                     value={lastName}
                     onChange={(e) => setLastName(e.target.value)}
                   />
                 </label>
-              </div>
+              </>
             )}
-            <label className="form-control w-full max-w-xs">
+
+            <label className="form-control w-full">
               <div className="label">
-                <span className="label-text">Email Id</span>
+                <span className="label-text font-medium">Email</span>
               </div>
               <input
                 type="email"
-                className="input input-bordered w-full max-w-xs"
+                placeholder="you@example.com"
+                className="input input-bordered w-full focus:input-primary"
                 value={emailId}
                 onChange={(e) => setEmailId(e.target.value)}
               />
             </label>
-            <label className="form-control w-full max-w-xs">
+
+            <label className="form-control w-full">
               <div className="label">
-                <span className="label-text">Password</span>
+                <span className="label-text font-medium">Password</span>
               </div>
               <div className="relative w-full">
                 <input
                   type={isShowPassword ? "password" : "text"}
-                  className="input input-bordered w-full max-w-xs pr-10"
+                  placeholder="••••••••"
+                  className="input input-bordered w-full pr-10 focus:input-primary"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                 />
-                <div
-                  className="absolute top-1/2 right-3 transform -translate-y-1/2 cursor-pointer text-gray-500"
+                <button
+                  type="button"
+                  className="absolute top-1/2 right-3 -translate-y-1/2 text-gray-400 hover:text-gray-200 transition-colors"
                   onClick={() => setIsShowPassword(!isShowPassword)}
                 >
-                  {isShowPassword ? <IoEye /> : <IoIosEyeOff />}
-                </div>
+                  {isShowPassword ? (
+                    <IoEye size={18} />
+                  ) : (
+                    <IoIosEyeOff size={18} />
+                  )}
+                </button>
               </div>
             </label>
           </div>
-          {/* {isLoginform && (
-            <Link to="/forgotPassword" className="cursor-pointer">
-              <p className="font-bold text-white">Forgot Password</p>
-            </Link>
-          )} */}
-          <div className="card-actions justify-center mt-5">
+
+          {isLoginform && (
+            <div className="text-right">
+              <Link
+                to="/forgot-password"
+                className="text-sm text-primary hover:underline"
+              >
+                Forgot Password?
+              </Link>
+            </div>
+          )}
+
+          <div className="card-actions mt-2">
             <button
-              className="btn btn-primary"
+              className="btn btn-primary w-full text-base"
               onClick={isLoginform ? handleLogin : handleSignUp}
             >
-              {isLoginform ? "Login" : "SignUp"}
+              {isLoginform ? "Sign In" : "Sign Up"}
             </button>
           </div>
+
+          <div className="divider text-xs opacity-50">OR</div>
+
           <p
-            className="m-auto cursor-pointer pt-2"
+            className="text-center cursor-pointer text-sm hover:text-primary transition-colors"
             onClick={() => setIsLoginForm(!isLoginform)}
           >
-            {isLoginform ? "New User? SignUp" : "Existing User? Login"}
+            {isLoginform
+              ? "New here? Create an account"
+              : "Already have an account? Sign in"}
           </p>
         </div>
       </div>

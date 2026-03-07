@@ -5,15 +5,15 @@ import Login from "./components/Login";
 import Profile from "./components/Profile";
 import Connections from "./components/Connections";
 import Requests from "./components/Requests";
+import ForgotPassword from "./components/ForgotPassword";
 import { Provider } from "react-redux";
 import appStore from "./utils/appStore";
 import { ToastContainer } from "react-toastify";
-// import ForgotPassword from "./components/ForgotPassword";
 
 function App() {
   return (
     <>
-      <ToastContainer />
+      <ToastContainer position="top-center" />
       <Provider store={appStore}>
         <BrowserRouter basename="/">
           <Routes>
@@ -23,7 +23,7 @@ function App() {
               <Route path="/profile" element={<Profile />} />
               <Route path="/connections" element={<Connections />} />
               <Route path="/requests" element={<Requests />} />
-              {/* <Route path="/forgotPassword" element={<ForgotPassword />} /> */}
+              <Route path="/forgot-password" element={<ForgotPassword />} />
             </Route>
           </Routes>
         </BrowserRouter>

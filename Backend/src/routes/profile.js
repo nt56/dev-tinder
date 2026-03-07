@@ -4,6 +4,36 @@ const { userAuth } = require("../middlewares/auth");
 const { validateEditData } = require("../utils/valiadation");
 const bcrypt = require("bcrypt");
 const validator = require("validator");
+const multer = require("multer");
+const path = require("path");
+
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, path.join(__dirname, "../uploads"));
+  },
+  filename: function (req, file, cb) {
+    const uniqueName =
+      req.user._id + "-" + Date.now() + path.extname(file.originalname);
+    cb(null, uniqueName);
+  },
+});
+
+const upload = multer({
+  storage,
+  limits: { fileSize: 5 * 1024 * 1024 },
+  fileFilter: function (req, file, cb) {
+    const allowedTypes = /jpeg|jpg|png|webp/;
+    const extname = allowedTypes.test(
+      path.extname(file.originalname).toLowerCase(),
+    );
+    const mimetype = allowedTypes.test(file.mimetype);
+    if (extname && mimetype) {
+      cb(null, true);
+    } else {
+      cb(new Error("Only image files (jpeg, jpg, png, webp) are allowed"));
+    }
+  },
+});
 
 profileRouter.get("/profile/view", userAuth, async (req, res) => {
   try {
@@ -24,7 +54,7 @@ profileRouter.patch("/profile/edit", userAuth, async (req, res) => {
     Object.keys(req.body).forEach((key) => (user[key] = req.body[key])); //upadating feilds with req.body
 
     await user.save();
-    res.send(`${user.firstName}, your profile updated successfuly...!`);
+    res.send(user);
   } catch (err) {
     res.status(400).send("Error : " + err.message);
   }
@@ -51,5 +81,26 @@ profileRouter.patch("/profile/forgotPassword", userAuth, async (req, res) => {
     res.status(400).send("Error : " + err.message);
   }
 });
+
+profileRouter.post(
+  "/profile/upload-photo",
+  userAuth,
+  upload.single("photo"),
+  async (req, res) => {
+    try {
+      if (!req.file) {
+        throw new Error("No file uploaded");
+      }
+
+      const photoUrl = "/uploads/" + req.file.filename;
+      req.user.photoUrl = photoUrl;
+      await req.user.save();
+
+      res.send({ photoUrl });
+    } catch (err) {
+      res.status(400).send("Error : " + err.message);
+    }
+  },
+);
 
 module.exports = profileRouter;
