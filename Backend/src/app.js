@@ -8,7 +8,7 @@ require("dotenv").config();
 
 app.use(
   cors({
-    origin: ["http://localhost:5173", "https://dev-tinder-inky.vercel.app"],
+    origin: ["http://localhost:5173", "https://dev-tinder-inky.vercel.app", "https://dev-tinder-one-delta.vercel.app"],
     credentials: true,
   }),
 );
