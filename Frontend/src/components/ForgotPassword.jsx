@@ -26,75 +26,72 @@ const ForgotPassword = () => {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-[calc(100vh-10rem)] px-4">
-      <div className="card bg-base-200 w-full max-w-md shadow-2xl border border-base-300">
-        <div className="card-body gap-4">
-          <div className="text-center">
-            <h2 className="text-2xl sm:text-3xl font-bold text-primary">
-              Reset Password
-            </h2>
-            <p className="text-sm opacity-70 mt-1">
-              Enter your email and new password
-            </p>
-          </div>
+    <section className="app-shell app-fade-up px-1">
+      <div className="mx-auto flex min-h-[calc(100vh-12rem)] max-w-md items-center">
+        <div className="surface-card w-full px-5 py-6 sm:px-8 sm:py-8">
+          <p className="hero-kicker">Reset password</p>
+          <h1 className="mt-4 font-display text-3xl font-semibold text-[var(--app-text)]">
+            Choose a new password
+          </h1>
+          <p className="mt-2 text-sm leading-6 text-[var(--app-muted)]">
+            Enter the email linked to your account and set a new password.
+          </p>
 
-          <label className="form-control w-full">
-            <div className="label">
-              <span className="label-text font-medium">Email</span>
-            </div>
-            <input
-              type="email"
-              placeholder="you@example.com"
-              className="input input-bordered w-full focus:input-primary"
-              value={emailId}
-              onChange={(e) => setEmailId(e.target.value)}
-            />
-          </label>
-
-          <label className="form-control w-full">
-            <div className="label">
-              <span className="label-text font-medium">New Password</span>
-            </div>
-            <div className="relative w-full">
+          <div className="mt-6 space-y-4">
+            <label>
+              <span className="field-label">Email</span>
               <input
-                type={isShowPassword ? "password" : "text"}
-                placeholder="••••••••"
-                className="input input-bordered w-full pr-10 focus:input-primary"
-                value={newPassword}
-                onChange={(e) => setNewPassword(e.target.value)}
+                type="email"
+                placeholder="you@example.com"
+                className="app-input"
+                value={emailId}
+                onChange={(e) => setEmailId(e.target.value)}
               />
-              <button
-                type="button"
-                className="absolute top-1/2 right-3 -translate-y-1/2 text-gray-400 hover:text-gray-200 transition-colors"
-                onClick={() => setIsShowPassword(!isShowPassword)}
-              >
-                {isShowPassword ? (
-                  <IoEye size={18} />
-                ) : (
-                  <IoIosEyeOff size={18} />
-                )}
-              </button>
-            </div>
-          </label>
+            </label>
 
-          <div className="card-actions mt-2">
-            <button
-              className="btn btn-primary w-full text-base"
-              onClick={handleForgotPassword}
-            >
-              Reset Password
-            </button>
+            <label>
+              <span className="field-label">New Password</span>
+              <div className="relative w-full">
+                <input
+                  type={isShowPassword ? "password" : "text"}
+                  placeholder="••••••••"
+                  className="app-input pr-12"
+                  value={newPassword}
+                  onChange={(e) => setNewPassword(e.target.value)}
+                />
+                <button
+                  type="button"
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-[var(--app-muted)] transition hover:text-[var(--app-text)]"
+                  onClick={() => setIsShowPassword(!isShowPassword)}
+                >
+                  {isShowPassword ? (
+                    <IoEye size={18} />
+                  ) : (
+                    <IoIosEyeOff size={18} />
+                  )}
+                </button>
+              </div>
+            </label>
           </div>
 
-          <p
-            className="text-center cursor-pointer text-sm hover:text-primary transition-colors"
+          <button
+            type="button"
+            className="app-button-primary mt-6 w-full"
+            onClick={handleForgotPassword}
+          >
+            Reset Password
+          </button>
+
+          <button
+            type="button"
+            className="app-button-ghost mt-3 w-full"
             onClick={() => navigate("/login")}
           >
             Back to Login
-          </p>
+          </button>
         </div>
       </div>
-    </div>
+    </section>
   );
 };
 

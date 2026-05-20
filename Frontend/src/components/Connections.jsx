@@ -1,4 +1,5 @@
 import axios from "axios";
+import { FiLink2 } from "react-icons/fi";
 import { BASE_URL, getPhotoUrl } from "../utils/constants";
 import { toast } from "react-toastify";
 import { useEffect } from "react";
@@ -24,69 +25,85 @@ const Connections = () => {
     fetchConnections();
   }, []);
 
-  if (!connections) return;
+  if (!connections) return null;
 
   if (connections.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-[60vh] px-4">
-        <div className="text-6xl mb-4">🤝</div>
-        <h1 className="text-xl sm:text-2xl font-bold text-center opacity-80">
-          No Connections Yet
-        </h1>
-        <p className="text-sm opacity-60 mt-2 text-center">
-          Start swiping to connect with other developers
-        </p>
-      </div>
+      <section className="app-shell app-fade-up px-1">
+        <div className="page-hero empty-state min-h-[60vh] px-6 py-10 sm:px-10">
+          <div className="empty-state-icon">
+            <FiLink2 size={28} />
+          </div>
+          <h1 className="font-display text-3xl font-semibold text-[var(--app-text)] sm:text-4xl">
+            No connections yet
+          </h1>
+          <p className="max-w-xl text-sm leading-6 text-[var(--app-muted)] sm:text-base">
+            Once people accept your requests, they will appear here.
+          </p>
+        </div>
+      </section>
     );
   }
 
   return (
-    connections && (
-      <div className="px-4 py-8 sm:py-12 max-w-3xl mx-auto">
-        <h1 className="text-2xl sm:text-3xl font-bold text-center mb-6 sm:mb-8">
-          Your Connections
-          <span className="badge badge-primary badge-lg ml-3 align-middle">
-            {connections.length}
-          </span>
-        </h1>
-        <div className="space-y-3 sm:space-y-4">
-          {connections.map((connection) => {
-            const { _id, firstName, lastName, age, gender, photoUrl, about } =
-              connection;
-
-            return (
-              <div
-                key={_id}
-                className="flex items-center gap-4 p-4 rounded-xl bg-base-200 border border-base-300 shadow-md hover:shadow-lg transition-shadow"
-              >
-                <div className="avatar">
-                  <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-full ring ring-primary ring-offset-base-100 ring-offset-1">
-                    <img
-                      src={getPhotoUrl(photoUrl)}
-                      className="object-cover"
-                      alt="user-photo"
-                    />
-                  </div>
-                </div>
-                <div className="flex-1 min-w-0">
-                  <h2 className="font-bold text-base sm:text-lg truncate">
-                    {firstName + " " + lastName}
-                  </h2>
-                  {age && gender && (
-                    <p className="text-xs sm:text-sm opacity-60">
-                      {age + " · " + gender}
-                    </p>
-                  )}
-                  <p className="text-xs sm:text-sm opacity-70 mt-1 line-clamp-1">
-                    {about}
-                  </p>
-                </div>
-              </div>
-            );
-          })}
+    <section className="app-shell app-fade-up space-y-5 px-1">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+        <div>
+          <p className="hero-kicker">Connections</p>
+          <h1 className="mt-4 font-display text-3xl font-semibold text-[var(--app-text)]">
+            Your connections
+          </h1>
+          <p className="mt-2 max-w-2xl text-sm leading-6 text-[var(--app-muted)]">
+            A simple list of developers you are connected with.
+          </p>
         </div>
+
+        <span className="info-pill">{connections.length} connections</span>
       </div>
-    )
+
+      <div className="list-grid md:grid-cols-2">
+        {connections.map((connection) => {
+          const { _id, firstName, lastName, age, gender, photoUrl, about } =
+            connection;
+          const fullName = [firstName, lastName].filter(Boolean).join(" ");
+
+          return (
+            <article
+              key={_id}
+              className="surface-card flex flex-col gap-4 p-4 sm:flex-row sm:items-start"
+            >
+              <div className="app-avatar-ring h-20 w-20 shrink-0 rounded-2xl">
+                <img
+                  src={getPhotoUrl(photoUrl)}
+                  alt="user-photo"
+                  className="app-image-cover"
+                />
+              </div>
+
+              <div className="min-w-0 flex-1">
+                <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
+                  <div>
+                    <h2 className="font-display text-xl font-semibold text-[var(--app-text)]">
+                      {fullName}
+                    </h2>
+                    <p className="mt-1 text-sm text-[var(--app-muted)]">
+                      {age && gender
+                        ? `${age} · ${gender}`
+                        : "Connected developer"}
+                    </p>
+                  </div>
+                  <span className="info-pill shrink-0">Connected</span>
+                </div>
+
+                <p className="mt-3 text-sm leading-6 text-[var(--app-muted)]">
+                  {about || "No summary added yet."}
+                </p>
+              </div>
+            </article>
+          );
+        })}
+      </div>
+    </section>
   );
 };
 

@@ -1,5 +1,6 @@
 import { useState } from "react";
 import axios from "axios";
+import { FiCamera, FiSave } from "react-icons/fi";
 import { BASE_URL, getPhotoUrl } from "../utils/constants";
 import { useDispatch } from "react-redux";
 import { addUser } from "../utils/userSlice";
@@ -15,6 +16,8 @@ const EditProfile = ({ user }) => {
   const [isUploading, setIsUploading] = useState(false);
 
   const dispatch = useDispatch();
+  const fullName =
+    [firstName, lastName].filter(Boolean).join(" ") || "Your profile";
 
   const handlePhotoUpload = async (e) => {
     const file = e.target.files[0];
@@ -57,153 +60,161 @@ const EditProfile = ({ user }) => {
   };
 
   return (
-    <div className="flex flex-col lg:flex-row items-center lg:items-start justify-center gap-6 lg:gap-10 px-4 py-8 sm:py-12">
-      {/* Edit Form */}
-      <div className="card bg-base-200 w-full max-w-md shadow-2xl border border-base-300">
-        <div className="card-body gap-3">
-          <h2 className="text-xl sm:text-2xl font-bold text-center text-primary">
-            Edit Profile
-          </h2>
+    <section className="app-shell app-fade-up space-y-5 px-1">
+      <div>
+        <p className="hero-kicker">Profile</p>
+        <h1 className="mt-4 font-display text-3xl font-semibold text-[var(--app-text)]">
+          Edit your profile
+        </h1>
+        <p className="mt-2 max-w-2xl text-sm leading-6 text-[var(--app-muted)]">
+          Keep the information clear and the photo well framed. The preview
+          updates as you type.
+        </p>
+      </div>
 
-          {/* Photo Upload */}
-          <div className="flex flex-col items-center gap-3">
-            <div className="avatar">
-              <div className="w-24 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2">
-                <img src={getPhotoUrl(photoUrl)} alt="profile" />
+      <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_360px] lg:items-start">
+        <div className="surface-card px-5 py-6 sm:px-7">
+          <div className="space-y-5">
+            <div className="surface-card-soft flex flex-col gap-4 px-4 py-4 sm:flex-row sm:items-center">
+              <div className="app-avatar-ring h-20 w-20 rounded-2xl sm:h-24 sm:w-24">
+                <img
+                  src={getPhotoUrl(photoUrl)}
+                  alt="profile"
+                  className="app-image-cover"
+                />
               </div>
+
+              <div className="flex-1">
+                <p className="text-sm font-medium text-[var(--app-text)]">
+                  Profile photo
+                </p>
+                <p className="mt-1 text-sm leading-6 text-[var(--app-muted)]">
+                  Upload a new image or paste an image URL below.
+                </p>
+              </div>
+
+              <label className="app-button-secondary cursor-pointer">
+                <FiCamera size={16} />
+                {isUploading ? "Uploading..." : "Upload"}
+                <input
+                  type="file"
+                  accept="image/jpeg,image/jpg,image/png,image/webp"
+                  className="hidden"
+                  onChange={handlePhotoUpload}
+                  disabled={isUploading}
+                />
+              </label>
             </div>
-            <label className="btn btn-sm btn-outline btn-primary">
-              {isUploading ? (
-                <span className="loading loading-spinner loading-xs"></span>
-              ) : (
-                "Upload Photo"
-              )}
-              <input
-                type="file"
-                accept="image/jpeg,image/jpg,image/png,image/webp"
-                className="hidden"
-                onChange={handlePhotoUpload}
-                disabled={isUploading}
-              />
-            </label>
-          </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            <label className="form-control w-full">
-              <div className="label">
-                <span className="label-text font-medium">First Name</span>
-              </div>
+            <div className="grid gap-4 sm:grid-cols-2">
+              <label>
+                <span className="field-label">First Name</span>
+                <input
+                  type="text"
+                  className="app-input"
+                  value={firstName}
+                  onChange={(e) => setFirstName(e.target.value)}
+                />
+              </label>
+
+              <label>
+                <span className="field-label">Last Name</span>
+                <input
+                  type="text"
+                  className="app-input"
+                  value={lastName}
+                  onChange={(e) => setLastName(e.target.value)}
+                />
+              </label>
+            </div>
+
+            <label>
+              <span className="field-label">Photo URL</span>
               <input
                 type="text"
-                className="input input-bordered w-full focus:input-primary"
-                value={firstName}
-                onChange={(e) => setFirstName(e.target.value)}
+                placeholder="https://example.com/photo.jpg"
+                className="app-input"
+                value={photoUrl}
+                onChange={(e) => setPhotoUrl(e.target.value)}
               />
             </label>
-            <label className="form-control w-full">
-              <div className="label">
-                <span className="label-text font-medium">Last Name</span>
-              </div>
-              <input
-                type="text"
-                className="input input-bordered w-full focus:input-primary"
-                value={lastName}
-                onChange={(e) => setLastName(e.target.value)}
-              />
-            </label>
-          </div>
 
-          <label className="form-control w-full">
-            <div className="label">
-              <span className="label-text font-medium">Photo URL</span>
+            <div className="grid gap-4 sm:grid-cols-2">
+              <label>
+                <span className="field-label">Age</span>
+                <input
+                  type="number"
+                  className="app-input"
+                  value={age}
+                  onChange={(e) => setAge(e.target.value)}
+                />
+              </label>
+
+              <label>
+                <span className="field-label">Gender</span>
+                <select
+                  className="app-select"
+                  value={gender}
+                  onChange={(e) => setGender(e.target.value)}
+                >
+                  <option value="">Select gender</option>
+                  <option value="male">Male</option>
+                  <option value="female">Female</option>
+                  <option value="other">Other</option>
+                </select>
+              </label>
             </div>
-            <input
-              type="text"
-              placeholder="https://example.com/photo.jpg"
-              className="input input-bordered w-full focus:input-primary"
-              value={photoUrl}
-              onChange={(e) => setPhotoUrl(e.target.value)}
-            />
-          </label>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            <label className="form-control w-full">
-              <div className="label">
-                <span className="label-text font-medium">Age</span>
-              </div>
-              <input
-                type="number"
-                className="input input-bordered w-full focus:input-primary"
-                value={age}
-                onChange={(e) => setAge(e.target.value)}
+            <label>
+              <span className="field-label">About</span>
+              <textarea
+                className="app-textarea"
+                value={about}
+                onChange={(e) => setAbout(e.target.value)}
+                placeholder="Tell people what you build and what you want to connect over."
               />
             </label>
-            <label className="form-control w-full">
-              <div className="label">
-                <span className="label-text font-medium">Gender</span>
-              </div>
-              <select
-                className="select select-bordered w-full focus:select-primary"
-                value={gender}
-                onChange={(e) => setGender(e.target.value)}
-              >
-                <option value="" disabled>
-                  Select gender
-                </option>
-                <option value="male">Male</option>
-                <option value="female">Female</option>
-                <option value="other">Other</option>
-              </select>
-            </label>
-          </div>
 
-          <label className="form-control w-full">
-            <div className="label">
-              <span className="label-text font-medium">About</span>
-            </div>
-            <textarea
-              className="textarea textarea-bordered w-full focus:textarea-primary h-24 resize-none"
-              value={about}
-              onChange={(e) => setAbout(e.target.value)}
-              placeholder="Tell us about yourself..."
-            />
-          </label>
-
-          <div className="card-actions mt-4">
-            <button className="btn btn-primary w-full" onClick={saveProfile}>
+            <button
+              type="button"
+              className="app-button-primary w-full"
+              onClick={saveProfile}
+            >
+              <FiSave size={17} />
               Save Changes
             </button>
           </div>
         </div>
-      </div>
 
-      {/* Live Preview Card */}
-      <div className="w-full max-w-sm">
-        <p className="text-center text-sm font-medium opacity-60 mb-3">
-          Live Preview
-        </p>
-        <div className="card bg-base-200 shadow-2xl border border-base-300 overflow-hidden">
-          <figure className="relative h-64 sm:h-72">
-            <img
-              src={getPhotoUrl(photoUrl)}
-              alt="preview"
-              className="w-full h-full object-cover"
-            />
-            <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-base-300/90 to-transparent p-4">
-              <h2 className="text-xl sm:text-2xl font-bold text-white">
-                {firstName + " " + lastName}
-              </h2>
-              {age && gender && (
-                <p className="text-sm text-gray-300">{age + " · " + gender}</p>
-              )}
+        <div className="space-y-3 lg:sticky lg:top-24">
+          <p className="text-sm font-medium text-[var(--app-text)]">Preview</p>
+          <div className="surface-card overflow-hidden">
+            <div className="aspect-[4/5] bg-[var(--app-surface-muted)]">
+              <img
+                src={getPhotoUrl(photoUrl)}
+                alt="preview"
+                className="app-image-cover"
+              />
             </div>
-          </figure>
-          <div className="card-body p-4 sm:p-6">
-            <p className="text-sm opacity-80">{about}</p>
+
+            <div className="px-5 py-5">
+              <h2 className="font-display text-2xl font-semibold text-[var(--app-text)]">
+                {fullName}
+              </h2>
+              <p className="mt-1 text-sm text-[var(--app-muted)]">
+                {age && gender
+                  ? `${age} · ${gender}`
+                  : "Add age and gender if you want more context on your card."}
+              </p>
+              <p className="mt-4 text-sm leading-6 text-[var(--app-muted)]">
+                {about ||
+                  "Your summary will appear here. Keep it short and easy to scan."}
+              </p>
+            </div>
           </div>
         </div>
       </div>
-    </div>
+    </section>
   );
 };
 

@@ -52,78 +52,97 @@ const Login = () => {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-[calc(100vh-10rem)] px-4">
-      <div className="card bg-base-200 w-full max-w-md shadow-2xl border border-base-300">
-        <div className="card-body gap-4">
-          <div className="text-center">
-            <h2 className="text-2xl sm:text-3xl font-bold text-primary">
-              {isLoginform ? "Welcome Back" : "Create Account"}
-            </h2>
-            <p className="text-sm opacity-70 mt-1">
-              {isLoginform
-                ? "Sign in to find your dev match"
-                : "Join the developer community"}
-            </p>
+    <section className="app-shell app-fade-up px-1">
+      <div className="mx-auto flex min-h-[calc(100vh-12rem)] max-w-md items-center">
+        <div className="surface-card w-full px-5 py-6 sm:px-8 sm:py-8">
+          <p className="hero-kicker">
+            {isLoginform ? "Welcome back" : "Create account"}
+          </p>
+          <h1 className="mt-4 font-display text-3xl font-semibold text-[var(--app-text)]">
+            {isLoginform ? "Sign in to continue" : "Get started with DevTinder"}
+          </h1>
+          <p className="mt-2 text-sm leading-6 text-[var(--app-muted)]">
+            {isLoginform
+              ? "Access your profile, connections, and requests from one place."
+              : "Create your account now and complete the rest of your profile after signup."}
+          </p>
+
+          <div className="mt-6 grid grid-cols-2 gap-2 rounded-xl bg-[var(--app-surface-muted)] p-1">
+            <button
+              type="button"
+              onClick={() => setIsLoginForm(true)}
+              className={`rounded-lg px-4 py-2 text-sm font-medium transition ${
+                isLoginform
+                  ? "bg-white text-[var(--app-text)] shadow-sm"
+                  : "text-[var(--app-muted)]"
+              }`}
+            >
+              Sign In
+            </button>
+            <button
+              type="button"
+              onClick={() => setIsLoginForm(false)}
+              className={`rounded-lg px-4 py-2 text-sm font-medium transition ${
+                !isLoginform
+                  ? "bg-white text-[var(--app-text)] shadow-sm"
+                  : "text-[var(--app-muted)]"
+              }`}
+            >
+              Sign Up
+            </button>
           </div>
 
-          <div className="space-y-3">
+          <div className="mt-6 space-y-4">
             {!isLoginform && (
-              <>
-                <label className="form-control w-full">
-                  <div className="label">
-                    <span className="label-text font-medium">First Name</span>
-                  </div>
+              <div className="grid gap-4 sm:grid-cols-2">
+                <label>
+                  <span className="field-label">First Name</span>
                   <input
                     type="text"
                     placeholder="John"
-                    className="input input-bordered w-full focus:input-primary"
+                    className="app-input"
                     value={firstName}
                     onChange={(e) => setFirstName(e.target.value)}
                   />
                 </label>
-                <label className="form-control w-full">
-                  <div className="label">
-                    <span className="label-text font-medium">Last Name</span>
-                  </div>
+
+                <label>
+                  <span className="field-label">Last Name</span>
                   <input
                     type="text"
                     placeholder="Doe"
-                    className="input input-bordered w-full focus:input-primary"
+                    className="app-input"
                     value={lastName}
                     onChange={(e) => setLastName(e.target.value)}
                   />
                 </label>
-              </>
+              </div>
             )}
 
-            <label className="form-control w-full">
-              <div className="label">
-                <span className="label-text font-medium">Email</span>
-              </div>
+            <label>
+              <span className="field-label">Email</span>
               <input
                 type="email"
                 placeholder="you@example.com"
-                className="input input-bordered w-full focus:input-primary"
+                className="app-input"
                 value={emailId}
                 onChange={(e) => setEmailId(e.target.value)}
               />
             </label>
 
-            <label className="form-control w-full">
-              <div className="label">
-                <span className="label-text font-medium">Password</span>
-              </div>
+            <label>
+              <span className="field-label">Password</span>
               <div className="relative w-full">
                 <input
                   type={isShowPassword ? "password" : "text"}
                   placeholder="••••••••"
-                  className="input input-bordered w-full pr-10 focus:input-primary"
+                  className="app-input pr-12"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                 />
                 <button
                   type="button"
-                  className="absolute top-1/2 right-3 -translate-y-1/2 text-gray-400 hover:text-gray-200 transition-colors"
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-[var(--app-muted)] transition hover:text-[var(--app-text)]"
                   onClick={() => setIsShowPassword(!isShowPassword)}
                 >
                   {isShowPassword ? (
@@ -136,39 +155,38 @@ const Login = () => {
             </label>
           </div>
 
-          {isLoginform && (
-            <div className="text-right">
+          {isLoginform ? (
+            <div className="mt-3 text-right">
               <Link
                 to="/forgot-password"
-                className="text-sm text-primary hover:underline"
+                className="text-sm text-[var(--app-muted)] transition hover:text-[var(--app-text)]"
               >
-                Forgot Password?
+                Forgot password?
               </Link>
             </div>
-          )}
+          ) : null}
 
-          <div className="card-actions mt-2">
-            <button
-              className="btn btn-primary w-full text-base"
-              onClick={isLoginform ? handleLogin : handleSignUp}
-            >
-              {isLoginform ? "Sign In" : "Sign Up"}
-            </button>
-          </div>
-
-          <div className="divider text-xs opacity-50">OR</div>
-
-          <p
-            className="text-center cursor-pointer text-sm hover:text-primary transition-colors"
-            onClick={() => setIsLoginForm(!isLoginform)}
+          <button
+            type="button"
+            className="app-button-primary mt-6 w-full"
+            onClick={isLoginform ? handleLogin : handleSignUp}
           >
-            {isLoginform
-              ? "New here? Create an account"
-              : "Already have an account? Sign in"}
+            {isLoginform ? "Sign In" : "Create Account"}
+          </button>
+
+          <p className="mt-4 text-center text-sm text-[var(--app-muted)]">
+            {isLoginform ? "Need an account?" : "Already have an account?"}{" "}
+            <button
+              type="button"
+              className="font-medium text-[var(--app-text)]"
+              onClick={() => setIsLoginForm(!isLoginform)}
+            >
+              {isLoginform ? "Sign up" : "Sign in"}
+            </button>
           </p>
         </div>
       </div>
-    </div>
+    </section>
   );
 };
 

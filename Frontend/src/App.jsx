@@ -13,7 +13,23 @@ import { ToastContainer } from "react-toastify";
 function App() {
   return (
     <>
-      <ToastContainer position="top-center" />
+      <ToastContainer
+        position="top-center"
+        autoClose={2400}
+        hideProgressBar={false}
+        newestOnTop
+        pauseOnFocusLoss={false}
+        toastStyle={{
+          background: "rgba(255, 248, 241, 0.96)",
+          color: "#322117",
+          border: "1px solid rgba(203, 100, 29, 0.14)",
+          borderRadius: "18px",
+          boxShadow: "0 14px 32px rgba(138, 74, 27, 0.12)",
+        }}
+        progressStyle={{
+          background: "linear-gradient(135deg, #e88030, #f3b36a)",
+        }}
+      />
       <Provider store={appStore}>
         <BrowserRouter basename="/">
           <Routes>
