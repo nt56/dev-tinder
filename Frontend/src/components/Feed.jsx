@@ -19,8 +19,9 @@ const Feed = () => {
       });
       dispatch(addFeed(res.data));
     } catch (err) {
-      navigate("/login");
-      console.log(err.message);
+      if (err.response?.status === 401) {
+        navigate("/login");
+      }
     }
   };
 
