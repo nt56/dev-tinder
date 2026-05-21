@@ -1,11 +1,13 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Body from "./components/Body";
+import Home from "./components/Home";
 import Feed from "./components/Feed";
 import Login from "./components/Login";
 import Profile from "./components/Profile";
 import Connections from "./components/Connections";
 import Requests from "./components/Requests";
 import ForgotPassword from "./components/ForgotPassword";
+import Chat from "./components/Chat";
 import { Provider } from "react-redux";
 import appStore from "./utils/appStore";
 import { ToastContainer } from "react-toastify";
@@ -34,11 +36,13 @@ function App() {
         <BrowserRouter basename="/">
           <Routes>
             <Route path="/" element={<Body />}>
-              <Route path="/" element={<Feed />} />
+              <Route index element={<Home />} />
+              <Route path="/feed" element={<Feed />} />
               <Route path="/login" element={<Login />} />
               <Route path="/profile" element={<Profile />} />
               <Route path="/connections" element={<Connections />} />
               <Route path="/requests" element={<Requests />} />
+              <Route path="/chat" element={<Chat />} />
               <Route path="/forgot-password" element={<ForgotPassword />} />
             </Route>
           </Routes>

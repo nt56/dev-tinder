@@ -6,12 +6,13 @@ const Footer = () => {
 
   const links = user
     ? [
-        { to: "/", label: "Discover" },
+        { to: "/feed", label: "Discover" },
         { to: "/connections", label: "Connections" },
         { to: "/requests", label: "Requests" },
         { to: "/profile", label: "Profile" },
       ]
     : [
+        { to: "/", label: "Home" },
         { to: "/login", label: "Sign In" },
         { to: "/forgot-password", label: "Reset Password" },
       ];

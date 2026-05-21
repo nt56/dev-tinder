@@ -8,6 +8,7 @@ import {
   FiCompass,
   FiLink2,
   FiLogOut,
+  FiMessageSquare,
   FiUser,
 } from "react-icons/fi";
 import { BASE_URL, getPhotoUrl } from "../utils/constants";
@@ -23,8 +24,9 @@ const NavBar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const navItems = [
-    { to: "/", label: "Discover", icon: FiCompass },
+    { to: "/feed", label: "Discover", icon: FiCompass },
     { to: "/connections", label: "Connections", icon: FiLink2 },
+    { to: "/chat", label: "Chat", icon: FiMessageSquare },
     { to: "/requests", label: "Requests", icon: FiClock },
     { to: "/profile", label: "Profile", icon: FiUser },
   ];
@@ -66,7 +68,9 @@ const NavBar = () => {
     try {
       await axios.post(BASE_URL + "/logout", {}, { withCredentials: true });
       dispatch(removeUser());
-      navigate("/login");
+      sessionStorage.removeItem("_socket_token");
+      sessionStorage.removeItem("lastChatUserId");
+      navigate("/", { replace: true });
       toast.success("Logged out successfully");
     } catch (err) {
       toast.error(err.response.data);
@@ -78,7 +82,10 @@ const NavBar = () => {
       <div className="app-shell py-3">
         <div className="nav-shell px-4 py-3 sm:px-5">
           <div className="flex items-center gap-3">
-            <Link to="/" className="flex min-w-0 items-center gap-3">
+            <Link
+              to={user ? "/feed" : "/"}
+              className="flex min-w-0 items-center gap-3"
+            >
               <div className="grid h-11 w-11 place-items-center rounded-2xl border border-[var(--app-line)] bg-[color:rgba(255,255,255,0.82)] text-sm font-bold text-[var(--app-accent-strong)] shadow-sm">
                 DT
               </div>

@@ -29,7 +29,9 @@ const Login = () => {
         { withCredentials: true },
       );
       dispatch(addUser(res.data));
-      navigate("/");
+      const authToken = res.headers["x-auth-token"];
+      if (authToken) sessionStorage.setItem("_socket_token", authToken);
+      navigate("/feed");
       toast.success("Login Successful..!");
     } catch (err) {
       toast.error(err?.response?.data);
@@ -44,6 +46,8 @@ const Login = () => {
         { withCredentials: true },
       );
       dispatch(addUser(res.data));
+      const authToken = res.headers["x-auth-token"];
+      if (authToken) sessionStorage.setItem("_socket_token", authToken);
       toast.success("Signup Successful..!");
       navigate("/profile");
     } catch (err) {

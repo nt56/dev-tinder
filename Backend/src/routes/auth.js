@@ -51,6 +51,7 @@ authRouter.post("/signup", async (req, res) => {
     const token = await newUser.getJWT();
 
     res.cookie("token", token, cookieOptions);
+    res.setHeader("X-Auth-Token", token);
 
     res.status(200).send(newUser);
   } catch (err) {
@@ -77,6 +78,7 @@ authRouter.post("/login", async (req, res) => {
 
       //token to the cookie send response back to the user
       res.cookie("token", token, cookieOptions);
+      res.setHeader("X-Auth-Token", token);
 
       res.status(200).send(user);
     } else {
